@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="img/icon.png">
+  <meta name="darkreader-lock">
+  <title>Профиль — Nolejje</title>
+  <link href="css/pages.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="page-root">
+    <header class="header">
+      <div class="header-left">
+        <a href="/" class="logo"><img src="img/nolejje_dark.png" alt="Nolejje"></a>
+      </div>
+      <div class="header-center">
+        <nav id="header-nav">
+          <a class="header-nav-a" href="/">Главная</a>
+          <a class="header-nav-a" href="dashboard">Дэшборд</a>
+          <a class="header-nav-a" href="developer">Разработчик</a>
+          <a class="header-nav-a active" href="profile">Профиль</a>
+        </nav>
+      </div>
+      <div class="header-right">
+        <div id="header-user">
+          <span id="header-role-badge"></span>
+          <span id="header-username"></span>
+          <button class="header-btn" id="logout-btn">Выйти</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="page-content page-shell profile-page">
+      <section class="hero-card">
+        <div class="hero-copy">
+          <span class="section-tag">ПРОФИЛЬ</span>
+          <h1>Управление аккаунтом</h1>
+          <p class="hero-description">Один экран для аватара, имени и чувствительных действий без разрозненных блоков.</p>
+          <div class="hero-metrics profile-metrics">
+            <div class="metric-card">
+              <span class="metric-label">Статус</span>
+              <strong id="profile-status-role">Пользователь</strong>
+            </div>
+            <div class="metric-card">
+              <span class="metric-label">Почта</span>
+              <strong id="profile-status-email">—</strong>
+            </div>
+          </div>
+        </div>
+        <div class="hero-aside profile-hero-aside">
+          <div class="avatar-preview avatar-preview-large" id="avatar-preview">A</div>
+          <div class="profile-hero-meta">
+            <strong id="profile-display-name">Профиль</strong>
+            <span id="profile-display-role">Роль</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel-grid profile-grid">
+        <article class="surface-card profile-card profile-avatar-card">
+          <div class="card-heading">
+            <div>
+              <span class="card-kicker">Аватар</span>
+              <h2>Фото профиля</h2>
+            </div>
+            <span class="card-caption">PNG, JPG, WEBP или GIF до 2 МБ</span>
+          </div>
+          <label class="file-field">
+            <span id="avatar-file-label">Выбрать новый файл</span>
+            <input type="file" id="avatar-input" accept="image/png,image/jpeg,image/webp,image/gif">
+          </label>
+          <div class="button-row">
+            <button class="action-button" id="upload-avatar">Сохранить аватар</button>
+            <button class="ghost-button" id="remove-avatar">Удалить аватар</button>
+          </div>
+          <p class="profile-note">После выбора файла превью обновится сразу. Сохранение отправит изображение в аккаунт.</p>
+        </article>
+
+        <article class="surface-card profile-card profile-form-card">
+          <div class="card-heading">
+            <div>
+              <span class="card-kicker">Данные</span>
+              <h2>Основная информация</h2>
+            </div>
+          </div>
+          <div class="form-row">
+            <label for="profile-name">Имя</label>
+            <input id="profile-name" type="text" placeholder="Ваше имя">
+          </div>
+          <div class="form-row">
+            <label for="profile-email">Почта</label>
+            <input id="profile-email" type="email" readonly>
+          </div>
+          <div class="form-row">
+            <label for="profile-role">Роль</label>
+            <input id="profile-role" type="text" readonly>
+          </div>
+          <button class="action-button" id="save-name">Сохранить имя</button>
+        </article>
+
+        <article class="surface-card profile-card danger-card">
+          <div class="card-heading">
+            <div>
+              <span class="card-kicker">Безопасность</span>
+              <h2>Опасные действия</h2>
+            </div>
+          </div>
+          <p class="profile-note">Удаление аккаунта очистит профиль и завершит текущую сессию. Отменить действие после подтверждения уже нельзя.</p>
+          <button class="danger-button" id="delete-account">Удалить аккаунт</button>
+        </article>
+      </section>
+
+      <div class="status-message" id="profile-message"></div>
+    </main>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script src="js/profile.js"></script>
+</body>
+</html>

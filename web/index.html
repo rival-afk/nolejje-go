@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="img/icon.png">
+  <meta href="darkreader-lock">
+  <link href="css/index.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;700&display=swap" rel="stylesheet">  <!шрифт unbounded--!>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet"> <!шрифт jetbrains mono--!>
+  <title>Главная</title>
+</head>
+<body>
+<div class="root">
+  <header class="header">
+    <div class="header-left">
+      <a href="/" class="logo"><img src="img/nolejje_dark.png"></a>
+    </div>
+    <div class="header-center">
+      <nav id="header-nav">
+        <a class="header-nav-a active" href="#">Главная</a>
+        <a class="header-nav-a" href="dashboard">Дэшборд</a>
+        <a class="header-nav-a" href="profile">Профиль</a>
+        <a class="header-nav-a" href="developer">Разработчик</a>
+      </nav>
+    </div>
+    <div class="header-right">
+      <div id="auth-buttons">
+        <a class="header-btn" href="login">Войти</a>
+        <a class="header-btn accent-btn" href="login">Регистрация</a>
+      </div>
+    </div>
+  </header>
+  <main class="main">
+    <div class="hero">
+      <div class="hero-title-row">
+        <h1 class="red-title">Nolejje</h1>
+        <p class="white-p">— продуктивная учёба начинается здесь</p>
+      </div>
+      <div class="hero-buttons">
+        <button class="accent-button">Начать</button>
+        <button class="secondary-button">Возможности</button>
+      </div>
+    </div>
+    <div class="line">
+      <div class="line-track">
+        <a href="#progress">ПРОГРЕСС</a>
+        <a href="#schedule">РАСПИСАНИЕ</a>
+        <a href="#deadlines">ДЕДЛАЙНЫ</a>
+        <a href="#analytics">АНАЛИТИКА</a>
+
+        <a href="#progress">ПРОГРЕСС</a>
+        <a href="#schedule">РАСПИСАНИЕ</a>
+        <a href="#deadlines">ДЕДЛАЙНЫ</a>
+        <a href="#analytics">АНАЛИТИКА</a>
+      </div>
+    </div>
+    <section class="intro-section">
+      <span class="intro-label">WEB APPLICATION</span>
+      <h2 class="intro-title">Электронный дневник нового поколения</h2>
+      <p class="intro-text">Nolejje объединяет домашние задания,оценки, аналитику и расписание в одном современном интерфейсе.</p>
+    </section>
+    <section class="features-grid-section" id="features">
+      <div class="features-top">
+        <span class="intro-label">ВОЗМОЖНОСТИ</span>
+        <h2 class="features-title">Всё необходимое для современной учёбы</h2>
+        <p class="features-text">
+          Домашние задания, аналитика, расписание,
+          дедлайны и отслеживание прогресса —
+          в одном интерфейсе.
+        </p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card" id="progress">
+          <span class="feature-tag">ПРОГРЕСС</span>
+          <h3>Анализ успеваемости</h3>
+          <p>
+            Средний балл, динамика оценок
+            и общая статистика обучения.
+          </p>
+        </div>
+        <div class="feature-card" id="schedule">
+          <span class="feature-tag">РАСПИСАНИЕ</span>
+          <h3>Удобное расписание</h3>
+          <p>
+            Быстрый доступ к урокам,
+            заданиям и предметам.
+          </p>
+        </div>
+        <div class="feature-card" id="deadlines">
+          <span class="feature-tag">ДЕДЛАЙНЫ</span>
+          <h3>Контроль заданий</h3>
+          <p>
+            Отслеживание домашних заданий,
+            контрольных и тестов.
+          </p>
+        </div>
+        <div class="feature-card" id="analytics">
+          <span class="feature-tag">АНАЛИТИКА</span>
+          <h3>Рекомендации и прогнозы</h3>
+          <p>
+            Анализ результатов и предложения
+            по улучшению успеваемости.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+</body>
+<script src="js/index.js"></script>
+</html>

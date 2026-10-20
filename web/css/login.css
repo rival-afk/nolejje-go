@@ -1,0 +1,242 @@
+body {
+  display: flex;
+  background-color: #1e1e1e;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0;
+}
+
+.root {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.window {
+  display: flex;
+  flex-direction: column;
+  background-color: #2a2a2a;
+  width: 500px;
+  padding: 0 20px 0 20px;
+  outline: 3px solid #333333;
+  border-radius: 25px;
+  gap: 15px;
+  transition: all 0.3s ease;
+}
+
+.h1 {
+  font-family: 'Unbounded';
+  font-size: 40px;
+  font-weight: 400;
+  color: #ffffff;
+  text-align: center;
+  max-height: 40px;
+  margin-bottom: 30px;
+  margin-top: 20px;
+}
+
+.inputs {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+}
+
+
+.input {
+  margin-bottom: 20px;
+  border: none;
+  padding-left: 10px;
+  outline: 3px solid #333333;
+  color: #ffffff;
+  background-color: #2a2a2a;
+  border-radius: 15px;
+  height: 40px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.button {
+  font-family: 'Unbounded';
+  font-size: 25px;
+  margin-top: 20px;
+  margin-bottom: 15px;
+  color: #1e1e1e;
+  background-color: #e1e1e1;
+  align-items: center;
+  min-height: 30px;
+  height: 60px;
+  width: 70%;
+  margin-left: 15%;
+  border-radius: 20px;
+  border: none;
+  outline: solid 3px #333333;
+  transition: outline-color 0.3s ease, background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+}
+
+.button:hover {
+  background-color: #ffffff;
+  color: #333333;
+  transform: scale(1.03);
+  outline-color: #5c5c5c;
+}
+
+.button:active {
+  transform: scale(0.97);
+  color: #2a2a2a;
+  background-color: #a0a0a0;
+  outline-color: #333333;
+}
+
+.role_tabs {
+  display: flex;
+  gap: 10px;
+}
+
+.role_tab {
+  font-size: 15px;
+  font-family: 'Unbounded';
+  border: none;
+  background-color: #e1e1e1;
+  outline: 3px solid #333333;
+  color: #2a2a2a;
+  border-radius: 10px;
+  height: 40px;
+  width: 100vw;
+  text-align: center;
+  transition: outline-color 0.3s ease, background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+}
+
+.role_tab:hover {
+  background-color: #ffffff;
+  color: #333333;
+  transform: scale(1.03);
+  outline-color: #5c5c5c;
+}
+
+.role_tab:active {
+  transform: scale(0.97);
+  color: #2a2a2a;
+  background-color: #a0a0a0;
+  outline-color: #333333;
+}
+
+#error {
+  display: none;
+  font-family: "JetBrains Mono", monospace;
+  text-align: center;
+  height: 40px;
+  outline: solid 2px #ff7070;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  background-color: #ff000026;
+  color: #ffffff;
+  line-height: 40px;
+}
+
+#class-select {
+  margin-top: 15px;
+  border: none;
+  padding-left: 10px;
+  outline: 3px solid #333333;
+  color: #ffffff;
+  background-color: #2a2a2a;
+  border-radius: 15px;
+  height: 40px;
+  font-family: 'JetBrains Mono', monospace;
+  cursor: pointer;
+}
+
+#class-select option {
+  background-color: #2a2a2a;
+  color: #ffffff;
+}
+
+#tabs {
+  display: flex;
+  position: relative;
+  border-radius: 50px;
+  min-height: 75px;
+  background-color: #2a2a2a;
+  outline: solid 3px #333333;
+  margin-top: 20px;
+  margin-bottom: 0px;
+}
+
+.tab-bg {
+  position: absolute;
+  width: 50%;
+  height: 100%;
+  background-color: #333333;
+  outline: solid 3px #797979;
+  border-radius: 50px;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tab {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #aaa;
+  z-index: 2;
+  cursor: pointer;
+  height: 75px;
+  border-radius: 75px;
+  transition: color 0.3s, transform 0.3s ease;
+  max-width: 50%;
+  font-size: 25px;
+  font-family: 'Unbounded';
+}
+
+.tab:hover {
+  color: #eeeeee;
+}
+
+.tab.active {
+  color: #ffffff;
+  z-index: 3;
+  max-width: 50%;
+  background: transparent;
+  border: none;
+  height: 75px;
+  border-radius: 75px;
+  width: 50%;
+  font-size: 25px;
+  font-family: 'Unbounded';
+  transform: scale(1.03);
+  transition: color 0.3s, transform 0.3s ease;
+}
+
+#container {
+  position: relative;
+  min-height: 320px;
+}
+
+.form {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+}
+
+.hidden {
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.role_tab.selected {
+    background-color: #333333;
+    color: #ffffff;
+    outline-color: #797979;
+}
+
+#class-select.hidden {
+    display: none;
+}

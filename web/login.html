@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="darkreader-lock">
+  <title>Nolejje</title>
+  <link rel="icon" type="image/png" href="img/icon.png">
+  <link href="css/login.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;700&display=swap" rel="stylesheet">  <!шрифт unbounded--!>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet"> <!шрифт jetbrains mono--!>
+</head>
+<body>
+  <div class="root">
+    <div class="window">
+      <div id="tabs">
+        <button id="loginTab" class="tab active">Вход</button>
+        <button id="registerTab" class="tab">Регистрация</button>
+        <div class="tab-bg"></div>
+      </div>
+      <div id="container">
+        <div id="register" class="form hidden">
+          <h1 class="h1">Добро пожаловать</h1>
+          <div class="inputs">
+            <input class="input" id="register-name" type="text" placeholder="Имя">
+            <input class="input" id="register-email" type="email" placeholder="Почта">
+            <input class="input" id="register-password" type="password" placeholder="Пароль">
+            <div class="role_tabs">
+              <button class="role_tab" id="student">Ученик</button>
+              <button class="role_tab" id="teacher">Учитель</button>
+            </div>
+            <select id="class-select">
+              <option value="">Выберите класс</option>
+            </select>
+          </div>
+          <button class="button" id="register-button">Зарегестрироваться</button>
+        </div>
+        <div id="login" class="form visible">
+          <h1 class="h1">С возвращением</h1>
+          <div class="inputs">
+            <input class="input" id="login-email" type="email" placeholder="Почта">
+            <input class="input" id="login-password" type="password" placeholder="Пароль">
+          </div>
+          <button class="button" id="login-button">Войти</button>
+        </div>
+      </div>
+      <div id="error"></div>
+    </div>
+  </div>
+</body>
+<script src="js/login.js"></script>
+</html>

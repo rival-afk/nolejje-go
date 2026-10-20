@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="img/icon.png">
+  <meta name="darkreader-lock">
+  <link href="css/dashboard.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+  <title>Дэшборд — Nolejje</title>
+</head>
+<body>
+<div class="a1"></div>
+<div class="a2"></div>
+
+<header class="header">
+  <div class="header-left">
+    <a href="/" class="logo"><img src="img/nolejje_dark.png" alt="Nolejje"></a>
+  </div>
+  <div class="header-center">
+    <nav id="header-nav">
+      <a class="header-nav-a" href="index">Главная</a>
+      <a class="header-nav-a active" href="dashboard">Дэшборд</a>      <a class="header-nav-a" href="profile">Профиль</a>      <a class="header-nav-a" href="developer">Разработчик</a>
+    </nav>
+  </div>
+  <div class="header-right">
+    <div id="header-user">
+      <span id="header-role-badge"></span>
+      <span id="header-username"></span>
+      <button class="header-btn" id="logout-btn">Выйти</button>
+    </div>
+  </div>
+</header>
+
+<!-- STUDENT -->
+<div id="student-dashboard" style="display:none;">
+  <div class="student-wrap">
+    <div class="student-hero">
+      <div class="student-hero-left">
+        <h1 id="user-name"></h1>
+        <span id="user-class"></span>
+      </div>
+      <div class="student-hero-right">
+        <div class="stat-card">
+          <span class="stat-label">Средний балл</span>
+          <span class="stat-value" id="avg-grade">—</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Заданий</span>
+          <span class="stat-value" id="hw-count">—</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="dash-tabs">
+      <button class="dash-tab active" data-tab="homework">Домашние задания</button>
+      <button class="dash-tab" data-tab="grades">Оценки</button>
+      <button class="dash-tab" data-tab="schedule">Расписание</button>
+    </div>
+
+    <div class="dash-tab-content" id="tab-homework">
+      <div id="homework"></div>
+    </div>
+
+    <div class="dash-tab-content hidden" id="tab-grades">
+      <div id="grades-list"></div>
+    </div>
+
+    <div class="dash-tab-content hidden" id="tab-schedule">
+      <div id="schedule-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- TEACHER -->
+<div id="teacher-dashboard" style="display:none;">
+  <div class="teacher-wrap">
+    <div class="teacher-hero">
+      <h1 id="teacher-name"></h1>
+      <span class="teacher-role-tag">УЧИТЕЛЬ</span>
+    </div>
+    <div class="dashboard-layout">
+      <aside class="sidebar">
+        <span class="sidebar-label">КЛАССЫ</span>
+        <div id="class-list" class="class-list"></div>
+      </aside>
+      <div class="dashboard-main">
+        <div class="main-header-row">
+          <h2 id="class-title" class="main-title">Выберите класс</h2>
+        </div>
+
+        <div class="dash-tabs" id="teacher-tabs" style="display:none;">
+          <button class="dash-tab active" data-tab="t-journal">Журнал</button>
+          <button class="dash-tab" data-tab="t-homework">Задания</button>
+          <button class="dash-tab" data-tab="t-schedule">Расписание</button>
+        </div>
+
+        <div class="dash-tab-content" id="tab-t-journal">
+          <div id="grade-form" style="display:none;">
+            <div class="panel" style="margin-bottom:16px;">
+              <span class="section-tag">ВЫСТАВИТЬ ОЦЕНКУ</span>
+              <div class="panel-inputs" style="margin-top:14px;">
+                <select class="assign-select" id="grade-student-select"></select>
+                <input class="dash-input" id="grade-value" type="number" min="1" max="10" placeholder="Балл">
+                <input class="dash-input" id="grade-date" type="date">
+                <button class="accent-button" id="add-grade-btn">Выставить</button>
+              </div>
+              <div class="assign-error" id="grade-error"></div>
+            </div>
+          </div>
+          <div id="grades-journal"></div>
+        </div>
+
+        <div class="dash-tab-content hidden" id="tab-t-homework">
+          <div class="panel" style="margin-bottom:16px;">
+            <span class="section-tag">ДОБАВИТЬ ЗАДАНИЕ</span>
+            <div class="panel-inputs" style="margin-top:14px;">
+              <input class="dash-input" id="hw-title" placeholder="Название">
+              <input class="dash-input" id="hw-desc" placeholder="Описание">
+              <button class="accent-button" id="add-hw">Добавить</button>
+            </div>
+          </div>
+          <div id="students"></div>
+        </div>
+
+        <div class="dash-tab-content hidden" id="tab-t-schedule">
+          <div id="teacher-schedule"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div id="admin-dashboard" style="display:none;">
+  <div class="admin-layout">
+    <aside class="admin-sidebar">
+      <div class="admin-sidebar-brand">
+        <span class="admin-badge">ADMIN</span>
+      </div>
+      <nav class="admin-nav">
+        <div class="nav-item active" data-page="assign"><span class="nav-icon">●</span>Назначения</div>
+        <div class="nav-item" data-page="classes"><span class="nav-icon">●</span>Классы</div>
+        <div class="nav-item" data-page="subjects"><span class="nav-icon">●</span>Предметы</div>
+        <div class="nav-item" data-page="teachers"><span class="nav-icon">●</span>Учителя</div>
+        <div class="nav-item" data-page="admins"><span class="nav-icon">●</span>Админы</div>
+        <div class="nav-item" data-page="analytics"><span class="nav-icon">●</span>Аналитика</div>
+        <div class="nav-item" data-page="reports"><span class="nav-icon">●</span>Жалобы</div>
+      </nav>
+      <div class="admin-sidebar-footer">
+        <span id="admin-username-sidebar"></span>
+        <button class="sidebar-logout" id="logout-btn-admin">Выйти</button>
+      </div>
+    </aside>
+    <main class="admin-main" id="admin-content"></main>
+  </div>
+</div>
+
+<script src="js/auth.js"></script>
+<script src="js/dashboard.js"></script>
+</body>
+</html>

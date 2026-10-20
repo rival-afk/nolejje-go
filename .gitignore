@@ -1,0 +1,11 @@
+.github_token
+.env
+*.env.local
+__pycache__/
+*.pyc
+.venv/
+.idea/
+.vscode/
+*.o
+*.exe
+nolejje
