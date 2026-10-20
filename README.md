@@ -179,48 +179,46 @@ sudo -u postgres psql -d nolejje -f database.sql
 
 ---
 
-## 🌐 Продакшен-размещение
+## 🌐 Продакшен-развертывание
 
-Для реальной эксплуатации рекомендуется использовать связку **Nginx + Go-сервер**:
+### Быстрый вариант (бинарник + systemd + Nginx)
 
-1. **Запуск backend** (например, через systemd или supervisor, либо Docker)
-   ```bash
-   go run .
-   ```
-2. **Настройка Nginx** как обратного прокси и раздатчика статики
 ```bash
-sudo cat > /etc/nginx/sites-available/default << 'EOF'
-server {
-    listen 80;
-    listen [::]:80;
-    
-    server_name localhost;
-    
-    root /home/itz-rival/projects/nolejje/web;
-    index index.html;
-    
-    location / {
-        try_files $uri $uri.html $uri/ =404;
-    }
-    
-    error_page 404 /404.html;
-    
-    location = /404.html {
-        internal;
-    }
-    
-    location /api/ {
-        proxy_pass http://127.0.0.1:8000/;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-}
-EOF
+# 1. Сборка (на любой машине; итог — статический бинарник для Linux x86_64)
+CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags "-s -w" -o nolejje .
+# (или просто: make release)
+
+# 2. Заливка на сервер
+scp nolejje version.json web/ user@server:/opt/nolejje/
+
+# 3. На сервере — окружение
+cp .env.example /opt/nolejje/.env && nano /opt/nolejje/.env
+
+# 4. Сборка базы
+sudo -u postgres psql -d nolejje -f database.sql
+
+# 5. systemd
+sudo cp deploy/nolejje.service /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable --now nolejje
 ```
 
-Пример конфигурации Nginx можно найти в файле `nginx.example.conf` (если присутствует в проекте) либо создать по шаблону.
+Шаблон Nginx — `deploy/nginx.example.conf` (статика из `web/`, `/api/` → 127.0.0.1:8000). За HttpOnly-cookie следит приложение: токен не хранится в localStorage, а cookie выставляет сервер.
+
+### Docker-вариант
+
+```bash
+cp .env.example .env && nano .env
+docker compose up -d --build
+```
+
+`docker-compose.yaml` поднимает приложение и PostgreSQL 15 (healthcheck, volume `postgres_data`).
+
+### Проверка
+
+- `GET /status` — сервер, бд, версия
+- `GET /info` — версия и дата обновления
+- `GET /docs` — авто-документация со всеми зарегистрированными маршрутами (для отправки запросов прямо из браузера)
 
 ---
 
@@ -249,7 +247,7 @@ EOF
 Убедитесь, что база `nolejje` создана и команда `psql` выполняется от корректного пользователя с правами на базу.
 
 **4. Статические файлы не загружаются**  
-Убедитесь, что вы запустили `http.server` из корня проекта с флагом `--directory web`.  
+В прод-варианте статику отдаёт Nginx из `web/` (см. `deploy/nginx.example.conf`); в дев-варианте запустите `python -m http.server --directory web` из корня проекта.  
 В браузере откройте инструменты разработчика (F12 → Network / Сеть) – там видно, какие файлы не найдены.
 
 ---

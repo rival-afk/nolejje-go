@@ -8,4 +8,6 @@ __pycache__/
 .vscode/
 *.o
 *.exe
-nolejje
+nolejjeprod/
+prod.zip
+nolejje-linux-amd64
