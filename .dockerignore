@@ -1,0 +1,7 @@
+nolejje
+.github_token
+.env
+.git
+*.md
+web/
+docs/
