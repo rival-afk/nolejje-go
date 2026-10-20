@@ -1,6 +1,6 @@
 # Nolejje — Электронный дневник
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue)](https://python.org) [![FastAPI](https://img.shields.io/badge/FastAPI-0.95%2B-green)](https://fastapi.tiangolo.com) [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14%2B-blue)](https://www.postgresql.org)  
+[![Go](https://img.shields.io/badge/Go-1.25%2B-00ADD8)](https://go.dev) [![Gin](https://img.shields.io/badge/Gin-1.12%2B-green)](https://gin-gonic.com) [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14%2B-blue)](https://www.postgresql.org)  
 
 **Nolejje** — веб-приложение для отслеживания домашних заданий, оценок и базового анализа успеваемости.  
 Создано, чтобы заменить бумажный дневник и упростить рутину ученика, учителя и родителя.
@@ -22,19 +22,18 @@
 | Уровень                | Технологии                                      |
 | ---------------------- | ----------------------------------------------- |
 | **Frontend**           | HTML5, CSS3, JavaScript (Vanilla)               |
-| **Backend**            | Python 3.10+, FastAPI, Pydantic                 |
-| **База данных**        | PostgreSQL, asyncpg / SQLAlchemy (при наличии)  |
-| **Аутентификация**     | JWT, bcrypt                                     |
-| **Веб-сервер**         | uvicorn (dev), Nginx (production)               |
+| **Backend**            | Go 1.25+, Gin, pgx/pgxpool                      |
+| **База данных**        | PostgreSQL 15+                                  |
+| **Аутентификация**     | JWT (golang-jwt), bcrypt                        |
+| **Веб-сервер**         | встроенный HTTP-сервер Go (dev), Nginx (prod)   |
 | **Статический сервер** | встроенный `http.server` (dev)                  |
 
 ---
 
 ## ⚙️ Требования
 
-- Python 3.10 или выше
+- Go 1.25 или выше
 - PostgreSQL 14+ (локально или удалённо)
-- `pip` для установки зависимостей
 - Рекомендуемая ОС: **Linux** (Ubuntu 24.04+)
 
 ---
@@ -48,18 +47,14 @@ git clone https://github.com/rival-afk/Nolejje
 cd nolejje
 ```
 
-### 2. Виртуальное окружение и зависимости
+### 2. Сборка
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
+go mod download
+go build -o nolejje .
 ```
 
-*Если файла `requirements.txt` нет, установите основные пакеты:*
-```bash
-pip install fastapi uvicorn python-dotenv asyncpg passlib[bcrypt] python-jose pydantic
-```
+Зависимости подтянутся автоматически из `go.mod` (gin, pgxpool, golang-jwt, bcrypt, godotenv).
 
 ### 3. Конфигурация окружения
 
@@ -96,10 +91,10 @@ sudo -u postgres psql -d nolejje -f database.sql
 Проект состоит из двух процессов – **бэкенд (API)** и **фронтенд (статика)**.  
 Запустите их в разных вкладках терминала.
 
-**Запуск API (порт 5500):**
+**Запуск API (порт 8000):**
 
 ```bash
-uvicorn main:app --host 0.0.0.0 --port 5500 --reload (--reload нужен для автоматической перезагрузки при изменении файлов апи)
+go run .
 ```
 
 **Запуск статики (порт 8000):**
@@ -110,8 +105,7 @@ python -m http.server 8000
 
 Теперь приложение доступно по адресу:  
 🌐 **http://localhost:8000** (веб-интерфейс)  
-🔌 **http://localhost:5500** (API)  
-📚 Документация API (автоматически): http://localhost:5500/docs
+🔌 **http://localhost:8000** (API)
 
 ---
 
@@ -138,19 +132,20 @@ nolejje/
 │   ├── dashboard.html
 │   ├── index.html
 │   └── login.html
-├── main.py
-├── auth.py
-├── db.py
-├── jwt_handler.py
-├── schemas.py
-├── security.py
+├── main.go
+├── auth.go
+├── db.go
+├── jwt_handler.go
+├── schemas.go
+├── security.go
+├── go.mod
+├── go.sum
 ├── .env.example
 ├── .gitignore
 ├── version.json
 ├── README.md
-├── url/
-│   ├── redir.html
-│   └── url.json
+├── Dockerfile
+├── docker-compose.yaml
 └── (другие служебные файлы)
 ```
 
@@ -165,7 +160,7 @@ nolejje/
 - Токен сохраняется в `localStorage` браузера.
 - При каждом защищённом запросе токен передаётся в заголовке `Authorization: Bearer <access_token>`.
 - Пароли хранятся в базе в виде хэшей (bcrypt).
-- Секретный ключ для подписи токенов задаётся в `.env` (`SECRET_KEY`).
+- Секретный ключ для подписи токенов задаётся в `.env` (`jwt_secret_key`).
 
 ---
 
@@ -185,11 +180,11 @@ sudo -u postgres psql -d nolejje -f database.sql
 
 ## 🌐 Продакшен-размещение
 
-Для реальной эксплуатации рекомендуется использовать связку **Nginx + Uvicorn**:
+Для реальной эксплуатации рекомендуется использовать связку **Nginx + Go-сервер**:
 
-1. **Запуск FastAPI** (например, через systemd или supervisor)
+1. **Запуск backend** (например, через systemd или supervisor, либо Docker)
    ```bash
-   uvicorn main:app
+   go run .
    ```
 2. **Настройка Nginx** как обратного прокси и раздатчика статики
 ```bash
@@ -247,7 +242,7 @@ EOF
 При попытке дампа или подключения к PostgreSQL используйте `sudo -u postgres`.
 
 **2. Порт занят**  
-Проверьте список процессов (`sudo lsof -i :5500` или `sudo lsof -i :8000`) и освободите порт или измените порты в командах запуска.
+Проверьте список процессов (`sudo lsof -i :8000` или `sudo lsof -i :8000`) и освободите порт или измените порты в командах запуска.
 
 **3. Не применяется схема БД**
 Убедитесь, что база `nolejje` создана и команда `psql` выполняется от корректного пользователя с правами на базу.
