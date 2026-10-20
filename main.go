@@ -162,8 +162,12 @@ func main() {
 	r.Use(gin.Logger(), gin.Recovery(), corsMiddleware())
 	r.Use(Auth())
 
-	registerGET(r)
-	registerOther(r)
+	public := r
+	protected := r.Group("/")
+	protected.Use(Auth())
+
+	registerGET(protected, public)
+	registerOther(protected)
 
 	r.NoRoute(func(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Not Found :(", "path": c.Request.URL.Path, "message": fmt.Sprintf("Route '%s' not found", c.Request.URL.Path)})
@@ -190,8 +194,9 @@ func main() {
 	ClosePool()
 }
 
-func registerGET(r gin.IRouter) {
-	r.GET("/", func(c *gin.Context) {
+func registerGET(p gin.IRouter, public gin.IRouter) {
+	r := p
+	public.GET("/", func(c *gin.Context) {
 		c.JSON(http.StatusNoContent, gin.H{"detail": "Nothing to do here"})
 	})
 
@@ -207,11 +212,11 @@ func registerGET(r gin.IRouter) {
 		c.JSON(http.StatusOK, rows)
 	})
 
-	r.GET("/info", func(c *gin.Context) {
+	public.GET("/info", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"name": "Nolejje", "version": VERSION_INFO["version"], "updated": VERSION_INFO["updated"]})
 	})
 
-	r.GET("/developer/age", func(c *gin.Context) {
+	public.GET("/developer/age", func(c *gin.Context) {
 		now := time.Now()
 		age := now.Year() - 2012
 		if now.Month() < time.March || (now.Month() == time.March && now.Day() < 28) {
@@ -220,7 +225,7 @@ func registerGET(r gin.IRouter) {
 		c.JSON(http.StatusOK, gin.H{"name": "itz_rival", "age": age, "stack": []string{"python", "js", "aiogram", "docker", "fastapi", "html", "css", "nginx"}})
 	})
 
-	r.GET("/students", func(c *gin.Context) {
+	public.GET("/students", func(c *gin.Context) {
 		studentID, ok := QueryInt(c, "student_id")
 		if !ok {
 			return
@@ -340,7 +345,7 @@ func registerGET(r gin.IRouter) {
 		c.JSON(http.StatusOK, homework)
 	})
 
-	r.GET("/ping", func(c *gin.Context) {
+	public.GET("/ping", func(c *gin.Context) {
 		before := time.Now().UnixNano()
 		client := http.Client{Timeout: time.Minute}
 		resp, err := client.Get("https://google.com")
@@ -357,7 +362,7 @@ func registerGET(r gin.IRouter) {
 		c.JSON(http.StatusOK, gin.H{"message": "Pong!", "ping": fmt.Sprintf("%d ms", rounded)})
 	})
 
-	r.GET("/status", func(c *gin.Context) {
+	public.GET("/status", func(c *gin.Context) {
 		dbStatus := "down"
 		_, err := OneRow("SELECT 1")
 		if err == nil {
@@ -370,7 +375,7 @@ func registerGET(r gin.IRouter) {
 		c.JSON(http.StatusOK, gin.H{"status": status, "server": "online", "db": dbStatus, "version": VERSION_INFO["version"]})
 	})
 
-	r.GET("/classes", func(c *gin.Context) {
+	public.GET("/classes", func(c *gin.Context) {
 		rows, err := ManyRows(`SELECT classes.id, schools.name, classes.number || classes.letter AS class FROM classes
 			JOIN schools ON schools.id = classes.school_id`)
 		if err != nil {
