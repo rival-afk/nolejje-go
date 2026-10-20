@@ -54,13 +54,37 @@ func GetUserIDFromToken(tokenString string) (int64, error) {
 	}
 }
 
-func GetUserFunc(c *gin.Context) (map[string]any, error) {
+const AccessCookieName = "access_token"
+
+func setAuthCookie(c *gin.Context, token string) {
+	secure := c.Request.TLS != nil || strings.EqualFold(c.GetHeader("X-Forwarded-Proto"), "https")
+	c.SetSameSite(http.SameSiteStrictMode)
+	c.SetCookie(AccessCookieName, token, 1440*60, "/", "", secure, true)
+}
+
+func clearAuthCookie(c *gin.Context) {
+	secure := c.Request.TLS != nil || strings.EqualFold(c.GetHeader("X-Forwarded-Proto"), "https")
+	c.SetSameSite(http.SameSiteStrictMode)
+	c.SetCookie(AccessCookieName, "", -1, "/", "", secure, true)
+}
+
+func extractToken(c *gin.Context) string {
 	header := c.GetHeader("Authorization")
-	if header == "" || !strings.HasPrefix(header, authScheme+" ") {
+	if strings.HasPrefix(header, authScheme+" ") {
+		return strings.TrimSpace(header[len(authScheme)+1:])
+	}
+	if cookie, err := c.Cookie(AccessCookieName); err == nil && cookie != "" {
+		return cookie
+	}
+	return ""
+}
+
+func GetUserFunc(c *gin.Context) (map[string]any, error) {
+	tokenString := extractToken(c)
+	if tokenString == "" {
 		return nil, HttpError(http.StatusUnauthorized, "Not authenticated")
 	}
-
-	userID, err := GetUserIDFromToken(strings.TrimSpace(strings.TrimPrefix(header, authScheme)))
+	userID, err := GetUserIDFromToken(tokenString)
 	if err != nil {
 		var detail string
 		if strings.Contains(err.Error(), "token has expired") {

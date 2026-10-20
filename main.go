@@ -160,7 +160,6 @@ func main() {
 
 	r := gin.New()
 	r.Use(gin.Logger(), gin.Recovery(), corsMiddleware())
-	r.Use(Auth())
 
 	public := r
 	protected := r.Group("/")
@@ -168,6 +167,7 @@ func main() {
 
 	registerGET(protected, public)
 	registerOther(protected)
+	registerDocs(public, r)
 
 	r.NoRoute(func(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Not Found :(", "path": c.Request.URL.Path, "message": fmt.Sprintf("Route '%s' not found", c.Request.URL.Path)})
@@ -392,6 +392,7 @@ func registerGET(p gin.IRouter, public gin.IRouter) {
 			handleErr(c, err)
 			return
 		}
+		setAuthCookie(c, newToken)
 		c.JSON(http.StatusOK, gin.H{"new_token": newToken})
 	})
 
@@ -665,9 +666,11 @@ func registerOther(r gin.IRouter) {
 			return
 		}
 		if deleted.RowsAffected() == 0 {
+			dbTx.Rollback(Ctx)
 			handleErr(c, HttpError(http.StatusNotFound, "Пользователь не найден"))
 			return
 		}
+		clearAuthCookie(c)
 		c.JSON(http.StatusOK, gin.H{"status": "successful"})
 	})
 
@@ -969,6 +972,7 @@ func registerOther(r gin.IRouter) {
 			handleErr(c, err)
 			return
 		}
+		setAuthCookie(c, token)
 		c.JSON(http.StatusOK, gin.H{"access_token": token})
 	})
 
