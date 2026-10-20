@@ -157,7 +157,8 @@ nolejje/
 
 Используется механизм **JWT (JSON Web Tokens)**.
 - При логине сервер выдаёт `access_token`.
-- Токен сохраняется в `localStorage` браузера.
+- Токен выдаётся в ответе `access_token` и устанавливается сервером в защищённое хранилище браузера — HttpOnly-cookie (`Secure`, `SameSite=Strict`), она недоступна скриптам.
+- Сервер принимает токен из заголовка `Authorization: Bearer <access_token>` или из cookie.
 - При каждом защищённом запросе токен передаётся в заголовке `Authorization: Bearer <access_token>`.
 - Пароли хранятся в базе в виде хэшей (bcrypt).
 - Секретный ключ для подписи токенов задаётся в `.env` (`jwt_secret_key`).
