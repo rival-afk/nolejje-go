@@ -168,7 +168,7 @@ func main() {
 	protected.Use(Auth())
 
 	registerGET(protected, public)
-	registerOther(protected)
+	registerOther(protected, public)
 	registerDocs(public, r)
 
 	r.NoRoute(notFoundHandler)
@@ -386,7 +386,7 @@ func registerGET(p gin.IRouter, public gin.IRouter) {
 		c.JSON(http.StatusOK, rows)
 	})
 
-	r.GET("/auth/refresh", func(c *gin.Context) {
+	public.GET("/auth/refresh", func(c *gin.Context) {
 		current_user := CurrentUser(c)
 		newToken, err := CreateAccessToken(map[string]any{"user_id": ToInt64(current_user["id"])})
 		if err != nil {
@@ -535,7 +535,7 @@ func registerGET(p gin.IRouter, public gin.IRouter) {
 	})
 }
 
-func registerOther(r gin.IRouter) {
+func registerOther(r, public gin.IRouter) {
 	r.PATCH("/users/me", func(c *gin.Context) {
 		var payload UserUpdate
 		if err := c.ShouldBindJSON(&payload); err != nil {
@@ -897,7 +897,7 @@ func registerOther(r gin.IRouter) {
 		c.JSON(http.StatusOK, createdSubject)
 	})
 
-	r.POST("/auth/register", func(c *gin.Context) {
+	public.POST("/auth/register", func(c *gin.Context) {
 		var user Register
 		if err := c.ShouldBindJSON(&user); err != nil {
 			handleErr(c, err)
@@ -953,7 +953,7 @@ func registerOther(r gin.IRouter) {
 		c.JSON(http.StatusOK, gin.H{"status": "successful"})
 	})
 
-	r.POST("/auth/login", func(c *gin.Context) {
+	public.POST("/auth/login", func(c *gin.Context) {
 		var user Login
 		if err := c.ShouldBindJSON(&user); err != nil {
 			handleErr(c, err)
