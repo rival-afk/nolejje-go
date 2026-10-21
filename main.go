@@ -10,6 +10,7 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"path/filepath"
 	"os/signal"
 	"strconv"
 	"strings"
@@ -159,6 +160,7 @@ func main() {
 	log.Println("Подключение к базе данных успешно")
 
 	r := gin.New()
+	Router = r
 	r.Use(gin.Logger(), gin.Recovery(), corsMiddleware())
 
 	public := r
@@ -169,9 +171,7 @@ func main() {
 	registerOther(protected)
 	registerDocs(public, r)
 
-	r.NoRoute(func(c *gin.Context) {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Not Found :(", "path": c.Request.URL.Path, "message": fmt.Sprintf("Route '%s' not found", c.Request.URL.Path)})
-	})
+	r.NoRoute(notFoundHandler)
 
 	done := make(chan os.Signal, 1)
 	signal.Notify(done, os.Interrupt, syscall.SIGTERM)
@@ -197,6 +197,7 @@ func main() {
 func registerGET(p gin.IRouter, public gin.IRouter) {
 	r := p
 	public.GET("/", func(c *gin.Context) {
+		if webIndexHTTP(c.Writer, c.Request) { return }
 		c.JSON(http.StatusNoContent, gin.H{"detail": "Nothing to do here"})
 	})
 
@@ -504,7 +505,7 @@ func registerGET(p gin.IRouter, public gin.IRouter) {
 		c.JSON(http.StatusOK, rows)
 	})
 
-	r.GET("/api/teacher/schedule", func(c *gin.Context) {
+	r.GET("/teacher/schedule", func(c *gin.Context) {
 		current_user := CurrentUser(c)
 		if current_user["role"] != "teacher" {
 			handleErr(c, HttpError(http.StatusForbidden, "Forbidden"))
@@ -700,7 +701,7 @@ func registerOther(r gin.IRouter) {
 		c.JSON(http.StatusOK, gin.H{"status": "successful"})
 	})
 
-	r.DELETE("/api/teacher/grades/:grade_id", func(c *gin.Context) {
+	r.DELETE("/teacher/grades/:grade_id", func(c *gin.Context) {
 		current_user := CurrentUser(c)
 		if current_user["role"] != "teacher" {
 			handleErr(c, HttpError(http.StatusForbidden, "Forbidden"))
@@ -976,7 +977,7 @@ func registerOther(r gin.IRouter) {
 		c.JSON(http.StatusOK, gin.H{"access_token": token})
 	})
 
-	r.POST("/api/teacher/grades", func(c *gin.Context) {
+	r.POST("/teacher/grades", func(c *gin.Context) {
 		current_user := CurrentUser(c)
 		if current_user["role"] != "teacher" {
 			handleErr(c, HttpError(http.StatusForbidden, "Forbidden :|"))
@@ -1325,4 +1326,52 @@ func ifaceToString(v any) string {
 		return s
 	}
 	return ""
+}
+
+// --- deploy additions: serve web/ statics + /api/* alias ---
+
+var Router *gin.Engine
+
+const webDir = "web"
+
+func webIndexHTTP(w http.ResponseWriter, r *http.Request) bool {
+	idx := filepath.Join(webDir, "index.html")
+	if _, err := os.Stat(idx); err != nil {
+		return false
+	}
+	http.ServeFile(w, r, idx)
+	return true
+}
+
+func notFoundHandler(c *gin.Context) {
+	path := c.Request.URL.Path
+	// frontend always calls /api/..., backend routes are registered without the prefix
+	if strings.HasPrefix(path, "/api") && !c.GetBool("apiAliased") {
+		c.Request.URL.Path = strings.TrimPrefix(path, "/api")
+		c.Set("apiAliased", true)
+		Router.HandleContext(c)
+		return
+	}
+	clean := filepath.Clean("/" + path)
+	full := filepath.Join(webDir, clean)
+	if !strings.HasPrefix(full, filepath.Clean(webDir)+string(os.PathSeparator)) && !(clean == "/" || clean == ".") {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Not Found :(", "path": path, "message": fmt.Sprintf("Route '%s' not found", path)})
+		return
+	}
+	if clean == "/" || strings.HasSuffix(clean, "/") {
+		if webIndexHTTP(c.Writer, c.Request) { return }
+	} else if fi, err := os.Stat(full); err == nil && !fi.IsDir() {
+		http.ServeFile(c.Writer, c.Request, full)
+		return
+	}
+	if fi, err := os.Stat(full + ".html"); err == nil && !fi.IsDir() {
+		http.ServeFile(c.Writer, c.Request, full+".html")
+		return
+	}
+	if webIndexHTTP(c.Writer, c.Request) { return }
+	if fi, err := os.Stat(filepath.Join(webDir, "404.html")); err == nil && !fi.IsDir() {
+		http.ServeFile(c.Writer, c.Request, filepath.Join(webDir, "404.html"))
+		return
+	}
+	c.JSON(http.StatusNotFound, gin.H{"error": "Not Found :(", "path": path, "message": fmt.Sprintf("Route '%s' not found", path)})
 }
