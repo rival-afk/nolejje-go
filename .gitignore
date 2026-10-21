@@ -11,3 +11,6 @@ __pycache__/
 nolejjeprod/
 prod.zip
 nolejje-linux-amd64
+
+# deploy artifacts (сборка идёт на устройстве, бинарь в git не храним)
+nolejje
