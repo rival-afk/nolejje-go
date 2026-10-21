@@ -240,3 +240,9 @@ body {
 #class-select.hidden {
     display: none;
 }
+
+/* ===== мобайл ===== */
+@media (max-width: 760px) {
+  .window { width: calc(100% - 28px); padding: 22px 16px; }
+  body { padding: 14px 0; }
+}

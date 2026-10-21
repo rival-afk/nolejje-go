@@ -155,3 +155,63 @@ html { scroll-behavior: smooth; }
   border-color: rgba(255,51,85,0.6);
   box-shadow: 0 0 60px rgba(255,51,85,0.15);
 }
+
+
+/* ===== мобайл / планшеты ===== */
+@media (max-width: 1100px) {
+  .header { grid-template-columns: auto auto 1fr; padding: 18px 20px; }
+  .header-center { justify-content: flex-end; }
+  #header-nav { gap: 14px; }
+  .hero { padding: 70px 28px; }
+  .red-title { font-size: clamp(64px, 14vw, 160px); }
+  .white-p { font-size: 18px !important; margin-bottom: 18px; }
+  .intro-section, .features-grid-section, .feature-section { padding-top: 70px; padding-bottom: 70px; padding-left: 28px; padding-right: 28px; }
+  .intro-title, .features-title { font-size: clamp(30px, 6vw, 56px); }
+  .feature-section h2 { font-size: clamp(28px, 5vw, 48px); }
+  .line { margin-top: 60px; }
+  .line-track a { font-size: 26px; margin-right: 34px; }
+}
+
+@media (max-width: 760px) {
+  html { -webkit-text-size-adjust: 100%; }
+  body { overflow-x: hidden; }
+
+  .header { padding: 14px 16px; gap: 10px; background: rgba(11,11,15,0.92); }
+  .header-left { flex: 1; }
+  .logo img { height: 26px; }
+  .header-center { justify-content: flex-start; overflow-x: auto; scrollbar-width: none; }
+  .header-center::-webkit-scrollbar { display: none; }
+  #header-nav { gap: 12px; white-space: nowrap; }
+  .header-nav-a { font-size: 12px; }
+  /* кнопки входа заменяем на компактные, чтобы навигация не разъезжалась */
+  #auth-buttons { display: none; }
+  .header-btn { font-size: 13px; padding: 10px 14px; border-radius: 10px; }
+
+  .hero { padding: 46px 18px 40px; min-height: auto; }
+  .hero-title-row { gap: 10px; align-items: baseline; }
+  .red-title { font-size: 17vw; line-height: 0.95; }
+  .white-p { font-size: 14px !important; margin-bottom: 14px; white-space: normal; }
+  .hero-buttons { gap: 10px; margin-top: 26px; flex-wrap: wrap; }
+  .accent-button, .secondary-button { font-size: 15px; padding: 14px 18px; border-radius: 12px; }
+  .dashboard-link { font-size: 16px; padding: 14px 18px; }
+
+  .line { margin-top: 40px; }
+  .line-track a { font-size: 18px; margin-right: 24px; }
+
+  .feature-section, .intro-section, .features-grid-section {
+    padding-top: 48px; padding-bottom: 48px; padding-left: 18px; padding-right: 18px;
+    scroll-margin-top: 84px;
+  }
+  .intro-section .intro-label, .features-top .feature-tag, .feature-tag { font-size: 11px; }
+  .intro-title, .features-title { margin-top: 14px; font-size: 27px; }
+  .intro-text, .features-text { margin-top: 16px; font-size: 15px; }
+
+  .features-grid { grid-template-columns: 1fr; gap: 16px; }
+  .feature-card { min-height: auto; padding: 26px 22px; border-radius: 20px; }
+  .feature-card h3 { margin-top: 14px; font-size: 21px; }
+  .feature-card p { margin-top: 12px; font-size: 14px; }
+  .feature-section h2 { margin-top: 14px; font-size: 24px; }
+  .feature-section p { margin-top: 14px; font-size: 15px; }
+
+  .main { max-width: 100%; }
+}
